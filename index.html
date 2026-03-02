@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agencia de Video - Edición Dinámica y Viral</title>
+  <style>
+    :root {
+      --bg: #0a0a15;
+      --card: #121220;
+      --text: #d0d0ff;
+      --accent: #00c4ff;
+      --accent-glow: 0 0 25px rgba(0, 196, 255, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 100px 20px 60px;
+      background: linear-gradient(to bottom, rgba(0,196,255,0.08), transparent);
+    }
+
+    h1 {
+      font-size: 3.8rem;
+      background: linear-gradient(90deg, var(--accent), #9f7eff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.4rem;
+      color: #a0a0cc;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .videos-presentation {
+      padding: 60px 0 100px;
+      background: rgba(10,10,30,0.4);
+    }
+
+    .videos-presentation h2 {
+      text-align: center;
+      font-size: 2.6rem;
+      margin-bottom: 3rem;
+      color: var(--accent);
+    }
+
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+      gap: 50px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .video-item {
+      text-align: center;
+    }
+
+    .video-wrapper {
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--accent-glow);
+      transition: all 0.5s ease;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .video-wrapper.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .video-wrapper.youtube-format {
+      aspect-ratio: 16 / 9;
+    }
+
+    .video-wrapper.tiktok-format {
+      aspect-ratio: 9 / 16;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .video-title {
+      margin-top: 16px;
+      font-size: 1.4rem;
+      color: #e0e0ff;
+      font-weight: 500;
+    }
+
+    .sound-btn {
+      margin-top: 16px;
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent), #0099cc);
+      color: #000;
+      font-weight: bold;
+      padding: 12px 28px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 196, 255, 0.3);
+    }
+
+    .sound-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0, 196, 255, 0.6);
+      background: linear-gradient(135deg, #00e0ff, #00aaff);
+    }
+
+    .sound-btn.activated {
+      background: #28a745;
+      color: white;
+    }
+
+    .sound-btn.activated:hover {
+      background: #218838;
+    }
+
+    section {
+      padding: 80px 0;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2.8rem;
+      margin-bottom: 2.5rem;
+      color: var(--accent);
+    }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin: 0 0 60px;
+    }
+
+    .feature {
+      background: var(--card);
+      padding: 16px 32px;
+      border-radius: 50px;
+      border: 1px solid #222244;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+    }
+
+    .feature:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--accent-glow);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 30px;
+    }
+
+    .price-card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 30px;
+      border: 1px solid #222244;
+      transition: all 0.4s;
+    }
+
+    .price-card:hover {
+      transform: translateY(-12px);
+      box-shadow: var(--accent-glow);
+      border-color: var(--accent);
+    }
+
+    .category {
+      font-size: 1.6rem;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      text-align: center;
+    }
+
+    .highlight-card {
+      border: 2px solid var(--accent);
+      box-shadow: 0 0 25px rgba(0, 196, 255, 0.4);
+      background: linear-gradient(145deg, rgba(0,196,255,0.1), rgba(18,18,32,1));
+      transform: translateY(-8px);
+    }
+
+    .highlight-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 0 35px rgba(0, 196, 255, 0.6);
+    }
+
+    .highlight-card .category {
+      color: #00e0ff;
+      font-weight: bold;
+    }
+
+    .extras,
+    .conditions,
+    .discounts {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 30px;
+      margin: 40px auto;
+      max-width: 900px;
+      border: 1px solid #222244;
+      text-align: left;
+    }
+
+    .extras h3,
+    .conditions h3,
+    .discounts h3 {
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+      font-size: 1.6rem;
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    ul li {
+      margin: 10px 0;
+      font-size: 1.1rem;
+    }
+
+    ul li::before {
+      content: "✔ ";
+      color: var(--accent);
+      margin-right: 8px;
+    }
+
+    .discounts ul li::before {
+      content: "🎬 ";
+      color: #ffea00;
+    }
+
+    .btn {
+      display: block;
+      width: fit-content;
+      margin: 40px auto;
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      padding: 16px 48px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-size: 1.3rem;
+      transition: all 0.3s;
+    }
+
+    .btn:hover {
+      background: #00e0ff;
+      transform: scale(1.08);
+      box-shadow: var(--accent-glow);
+    }
+
+    footer {
+      text-align: center;
+      padding: 60px 20px;
+      color: #606080;
+      border-top: 1px solid #222244;
+    }
+
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.9s ease-out;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2.8rem;
+      }
+      header {
+        padding: 80px 20px 50px;
+      }
+      .videos-grid {
+        grid-template-columns: 1fr;
+      }
+      .video-wrapper.tiktok-format {
+        max-width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Agencia de Video</h1>
+      <p class="subtitle">Edición profesional • Rápida • Viral • DaVinci & CapCut</p>
+    </div>
+  </header>
+
+  <div class="features container fade-in">
+    <div class="feature">✔ Videos dinámicos</div>
+    <div class="feature">✔ Estilo moderno y atractivo</div>
+    <div class="feature">✔ Optimizado para engagement</div>
+  </div>
+
+  <!-- Videos de presentación -->
+  <section class="videos-presentation fade-in">
+    <div class="container">
+      <h2>Conoce cómo editamos</h2>
+      <div class="videos-grid">
+        <div class="video-item">
+          <div class="video-wrapper youtube-format">
+            <video id="video1" autoplay loop playsinline muted>
+              <source src="video/presentacion.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="video-title">Estilo YouTube – Profesional y detallado</div>
+          <button class="sound-btn" onclick="toggleSound('video1', this)">
+            <span class="btn-text">Ver con sonido 🎧</span>
+          </button>
+        </div>
+
+        <div class="video-item">
+          <div class="video-wrapper tiktok-format">
+            <video id="video2" autoplay loop playsinline muted>
+              <source src="video/26 (2).mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="video-title">Estilo TikTok/Reels – Rápido y viral</div>
+          <button class="sound-btn" onclick="toggleSound('video2', this)">
+            <span class="btn-text">Ver con sonido 🎧</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Videos cortos -->
+  <section>
+    <div class="container">
+      <h2>📱 VIDEOS CORTOS (TikTok • Reels • Shorts)</h2>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="category">Hasta 30 segundos</div>
+          <p class="category">💰 $3 – $5</p>
+          <p>✔ Cortes limpios</p>
+          <p>✔ Ajuste de audio</p>
+          <p>✔ Formateo vertical</p>
+        </div>
+        <div class="price-card">
+          <div class="category">30 – 60 segundos</div>
+          <p class="category">💰 $5 – $8</p>
+          <p>✔ Cortes dinámicos</p>
+          <p>✔ Zooms y efectos básicos</p>
+          <p>✔ Música sincronizada</p>
+        </div>
+        <div class="price-card">
+          <div class="category">Hasta 90 segundos (Pro)</div>
+          <p class="category">💰 $8 – $12</p>
+          <p>✔ Subtítulos llamativos</p>
+          <p>✔ Emojis y efectos</p>
+          <p>✔ Edición moderna estilo viral</p>
+        </div>
+      </div>
+      <p style="text-align:center; margin-top:20px;">⏱ Entrega: 48h • ⚡ 24h urgente: +$3</p>
+    </div>
+  </section>
+
+  <!-- Vlogs cortos para redes -->
+  <section style="background:rgba(0,0,0,0.3);">
+    <div class="container">
+      <h2>📱 VLOGS CORTOS PARA REDES (TikTok • Reels • Shorts)</h2>
+      <p style="text-align:center; font-size:1.2rem; margin-bottom:2rem; color:#a0a0cc;">
+        Día en mi vida, GRWM, rutinas rápidas, behind the scenes – storytelling vertical que engancha en segundos.
+      </p>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="category">Ultra corto (15–30 seg)</div>
+          <p class="category">💰 $4 – $7</p>
+          <p>✔ Hook fuerte al inicio</p>
+          <p>✔ Cortes rápidos</p>
+          <p>✔ Texto + emojis</p>
+          <p>✔ Música trending</p>
+        </div>
+        <div class="price-card">
+          <div class="category">Corto (30–60 seg)</div>
+          <p class="category">💰 $7 – $12</p>
+          <p>✔ Storytelling mini</p>
+          <p>✔ Transiciones creativas</p>
+          <p>✔ Subtítulos animados</p>
+          <p>✔ Efectos y zooms</p>
+        </div>
+        <div class="price-card highlight-card">
+          <div class="category">Mediano redes (60–180 seg)</div>
+          <p class="category">💰 $12 – $22</p>
+          <p>✔ Arco narrativo completo</p>
+          <p>✔ B-roll + cortes fluidos</p>
+          <p>✔ Subtítulos + CTA</p>
+          <p>✔ Optimizado para algoritmo</p>
+        </div>
+      </div>
+      <p style="text-align:center; margin-top:20px;">⏱ Entrega: 24–48h • ⚡ 12h urgente: +$5</p>
+    </div>
+  </section>
+
+  <!-- Videos largo formato YouTube -->
+  <section>
+    <div class="container">
+      <h2>🎥 VIDEOS LARGO FORMATO PARA YOUTUBE</h2>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="category">Hasta 5 min</div>
+          <p class="category">💰 $10 – $15</p>
+          <p>✔ Cortes pro</p>
+          <p>✔ Limpieza audio</p>
+          <p>✔ Música básica</p>
+        </div>
+        <div class="price-card">
+          <div class="category">5–10 min</div>
+          <p class="category">💰 $15 – $25</p>
+          <p>✔ Edición dinámica</p>
+          <p>✔ Zooms/transiciones</p>
+          <p>✔ Color básico</p>
+        </div>
+        <div class="price-card">
+          <div class="category">10–20 min</div>
+          <p class="category">💰 $25 – $40</p>
+          <p>✔ Ritmo profesional</p>
+          <p>✔ Mejora audio/color</p>
+          <p>✔ B-roll si proporcionas</p>
+        </div>
+      </div>
+      <p style="text-align:center; margin-top:20px;">⏱ Entrega: 3 días • ⚡ 24h: +$7–$10</p>
+    </div>
+  </section>
+
+  <!-- Vlogs largos YouTube -->
+  <section style="background:rgba(20,20,40,0.4);">
+    <div class="container">
+      <h2>📹 VLOGS LARGOS / DIARIOS (YouTube)</h2>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="category">5–10 min</div>
+          <p class="category">💰 $15 – $30</p>
+          <p>✔ Cortes naturales</p>
+          <p>✔ Música fondo</p>
+          <p>✔ Texto pantalla</p>
+        </div>
+        <div class="price-card">
+          <div class="category">10–20 min</div>
+          <p class="category">💰 $30 – $55</p>
+          <p>✔ Storytelling dinámico</p>
+          <p>✔ Color básico</p>
+          <p>✔ Subtítulos</p>
+        </div>
+        <div class="price-card highlight-card">
+          <div class="category">20–40 min+</div>
+          <p class="category">💰 $50 – $90</p>
+          <p>✔ Elimina relleno</p>
+          <p>✔ Efectos creativos</p>
+          <p>✔ Miniatura + opti</p>
+        </div>
+      </div>
+      <p style="text-align:center; margin-top:20px;">⏱ Entrega: 2–5 días • ⚡ Urgente: +$10–$20</p>
+    </div>
+  </section>
+
+  <!-- Podcasts -->
+  <section>
+    <div class="container">
+      <h2>🎙️ EDICIÓN DE PODCASTS</h2>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="category">Corto (hasta 60 min)</div>
+          <p class="category">💰 $20 – $35</p>
+          <p>✔ Limpieza audio</p>
+          <p>✔ Elimina silencios</p>
+          <p>✔ Intro/outro</p>
+        </div>
+        <div class="price-card">
+          <div class="category">Mediano (1–2 h)</div>
+          <p class="category">💰 $35 – $60</p>
+          <p>✔ Cortes inteligentes</p>
+          <p>✔ Timestamps</p>
+          <p>✔ Mejora video si hay</p>
+        </div>
+        <div class="price-card highlight-card">
+          <div class="category">Largo / Completo</div>
+          <p class="category">💰 $60–$120+</p>
+          <p>✔ 2–4 h+ → editado pro</p>
+          <p>✔ Elimina relleno</p>
+          <p>✔ Ritmo fluido</p>
+          <p>✔ Subtítulos +extra</p>
+        </div>
+      </div>
+      <p style="text-align:center; margin-top:20px;">⚡ Urgente: +$10–$20 según duración</p>
+    </div>
+  </section>
+
+  <!-- Gaming -->
+  <section style="background:rgba(0,0,0,0.3);">
+    <div class="container">
+      <h2>🎮 VIDEOS GAMING / HIGHLIGHTS</h2>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="category">Highlights (1–5 min)</div>
+          <p class="category">💰 $10 – $18</p>
+          <p>✔ Mejores momentos</p>
+          <p>✔ Zooms/efectos</p>
+          <p>✔ Sonidos/memes</p>
+        </div>
+        <div class="price-card">
+          <div class="category">Video completo (10–20 min)</div>
+          <p class="category">💰 $30 – $45</p>
+          <p>✔ Edición entretenida</p>
+          <p>✔ Subtítulos destacados</p>
+          <p>✔ Ritmo dinámico</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clipado streams -->
+  <section>
+    <div class="container">
+      <h2>🎮 CLIPADO DE STREAMS (Twitch • Kick • YouTube)</h2>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="category">Revisión momentos</div>
+          <p class="category">💰 $8 – $12 /hora</p>
+          <p>✔ Revisión completa</p>
+          <p>✔ Timestamps o crudos</p>
+        </div>
+        <div class="price-card">
+          <div class="category">Clips redes (15–60 seg)</div>
+          <p class="category">💰 $2 – $4 /clip</p>
+          <p>✔ Vertical</p>
+          <p>✔ Zoom auto</p>
+          <p>✔ Packs: 5 → $8–12 | 10 → $15–20</p>
+        </div>
+        <div class="price-card">
+          <div class="category">Clips PRO viral</div>
+          <p class="category">💰 $4 – $7 /clip</p>
+          <p>✔ Subtítulos</p>
+          <p>✔ Emojis/efectos</p>
+          <p>✔ Packs: 5 → $18–25 | 10 → $30–45</p>
+        </div>
+        <div class="price-card highlight-card">
+          <div class="category">Stream largo a resumen</div>
+          <p class="category">💰 $30–$80+</p>
+          <p>✔ 3–4 h → 20–30 min editado</p>
+          <p>✔ Mejores momentos</p>
+          <p>✔ Ritmo pro + subtítulos</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Extras -->
+  <div class="extras container fade-in">
+    <h3>➕ EXTRAS</h3>
+    <ul>
+      <li>Subtítulos completos → +$5</li>
+      <li>Corrección color pro → +$5</li>
+      <li>Sincronización avanzada → +$3</li>
+      <li>Formato extra → +$2</li>
+      <li>Miniatura → +$5</li>
+      <li>Sonidos/memes → +$1</li>
+      <li>Entrega urgente → desde +$3</li>
+    </ul>
+  </div>
+
+  <!-- Condiciones -->
+  <div class="conditions container fade-in">
+    <h3>⏱ CONDICIONES</h3>
+    <ul>
+      <li>1 revisión gratis</li>
+      <li>Revisiones extra → +$2</li>
+      <li>Descuentos por volumen disponibles</li>
+      <li>Material >30 min → +$5</li>
+      <li>Material >1 h → +$10</li>
+    </ul>
+  </div>
+
+  <!-- Descuentos -->
+  <div class="discounts container fade-in">
+    <h3>🚀 DESCUENTOS POR VOLUMEN</h3>
+    <ul>
+      <li>5 videos → 10% OFF</li>
+      <li>10 videos → 20% OFF</li>
+      <li>15 videos → 30% OFF 🔥</li>
+    </ul>
+    <p style="margin-top: 15px; font-size: 1.1rem; color: #ffd700;">
+      (más volumen = mejor precio, cotiza directo)
+    </p>
+  </div>
+
+<a href="https://wa.me/593988090020?text=Hola%21%20Quiero%20cotizar%20edici%C3%B3n%20de%20videos%20%F0%9F%93%B9%0A%0AMe%20interesan%3A%0A-%20Vlogs%20cortos%20para%20TikTok%2FReels%0A-%20Streams%20editados%0A-%20Podcasts%0A%0A%C2%BFCu%C3%A1l%20es%20el%20mejor%20precio%20para%20varios%20videos%3F" class="btn">
+  ¡Cotizar ahora por WhatsApp!
+</a>
+
+  <footer>
+    <p>© 2026 Agencia de Video — Todo lo que necesitas para destacar</p>
+  </footer>
+
+  <script>
+    function toggleSound(videoId, button) {
+      const video = document.getElementById(videoId);
+      if (video.muted) {
+        video.muted = false;
+        video.currentTime = 0;
+        video.play();
+        button.classList.add('activated');
+        button.querySelector('.btn-text').textContent = '¡Sonido activado! 🔊';
+      } else {
+        video.muted = true;
+        button.classList.remove('activated');
+        button.querySelector('.btn-text').textContent = 'Ver con sonido 🎧';
+      }
+    }
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-in, .video-wrapper').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
